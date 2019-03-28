@@ -8,24 +8,27 @@ from PIL import Image
 import time
 
 
+os.chdir('/Users/y/Desktop/5/')
+
 # 画像データはこのディレクトリのサブディレクトリに格納
 root_dir = './traindata'
 
-datadir = 'C:/opencv-4.0.1-vc14_vc15/sources/data'
+datadir = 'C:/opencv-4.0.1-vc14_vc15'
 haarcascades = [
-    # 'haarcascades/haarcascade_frontalcatface.xml',
-    # 'haarcascades/haarcascade_frontalcatface_extended.xml',
-    'haarcascades/haarcascade_frontalface_alt.xml',
-    'haarcascades/haarcascade_frontalface_alt_tree.xml',
-    'haarcascades/haarcascade_frontalface_alt2.xml',
-    'haarcascades/haarcascade_frontalface_default.xml',
-    'haarcascades/haarcascade_profileface.xml',
+    # 'sources/data/haarcascades/haarcascade_frontalcatface.xml',
+    # 'sources/data/haarcascades/haarcascade_frontalcatface_extended.xml',
+    #'sources/data/haarcascades/haarcascade_frontalface_alt.xml',
+    #'sources/data/haarcascades/haarcascade_frontalface_alt_tree.xml',
+    #'sources/data/haarcascades/haarcascade_frontalface_alt2.xml',
+    #'sources/data/haarcascades/haarcascade_frontalface_default.xml',
+    #'sources/data/haarcascades/haarcascade_profileface.xml',
     
-    'haarcascades_cuda/haarcascade_frontalface_alt.xml',
-    'haarcascades_cuda/haarcascade_frontalface_alt_tree.xml',
-    'haarcascades_cuda/haarcascade_frontalface_alt2.xml',
-    'haarcascades_cuda/haarcascade_frontalface_default.xml',
-    'haarcascades_cuda/haarcascade_profileface.xml',
+    #'sources/data/haarcascades_cuda/haarcascade_frontalface_alt.xml',
+    #'sources/data/haarcascades_cuda/haarcascade_frontalface_alt_tree.xml',
+    #'sources/data/haarcascades_cuda/haarcascade_frontalface_alt2.xml',
+    #'sources/data/haarcascades_cuda/haarcascade_frontalface_default.xml',
+    #'sources/data/haarcascades_cuda/haarcascade_profileface.xml',
+    'lbpcascade_animeface.xml', # https://github.com/nagadomi/lbpcascade_animeface
     ]
 
 
@@ -53,7 +56,7 @@ def image_data(file, haarcascade):
             x,y,w,h = face
             face = image[y:y+h,x:x+w]
             face = cv2.resize(face,(image_size,image_size))
-            newdir = str(os.path.join(*file.split(os.sep)[0:-1]))+'_face'
+            newdir = os.path.join(*file.split(os.sep)[0:-1])+'_face'
             if not os.path.exists(newdir):
                 os.mkdir(newdir)
             cv2.imwrite(newdir+'/'+str(count)+'.png',face)
