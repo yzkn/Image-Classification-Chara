@@ -1,28 +1,38 @@
 # Copyright (c) 2019 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
 
+# Required:
+#   OpenCV (https://opencv.org/releases.html)
+#   $ pip install numpy pillow opencv-python opencv-contrib-python
+
 import cv2
-import sys
 import os
-import glob
+from glob import glob
 from PIL import Image
 import time
 
+scrpath = os.path.abspath(os.path.dirname(__file__))
+os.chdir(scrpath)
 
-os.chdir('/Users/y/Desktop/5/')
+# このスクリプトと同じディレクトリにtrフォルダを作成、
+# そのサブディレクトリに画像データを格納
+root_dirname = 'traindata'
 
-# 画像データはこのディレクトリのサブディレクトリに格納
-root_dir = './traindata'
-
+# OpenCVのインストール先(README.md.txtがあるディレクトリ)
 datadir = 'C:/opencv-4.0.1-vc14_vc15'
+
+# リサイズ後のサイズ
+image_size = 100
+
+# 分類器のパス一覧
 haarcascades = [
-    # 'sources/data/haarcascades/haarcascade_frontalcatface.xml',
-    # 'sources/data/haarcascades/haarcascade_frontalcatface_extended.xml',
+    #'sources/data/haarcascades/haarcascade_frontalcatface.xml',
+    #'sources/data/haarcascades/haarcascade_frontalcatface_extended.xml',
     #'sources/data/haarcascades/haarcascade_frontalface_alt.xml',
     #'sources/data/haarcascades/haarcascade_frontalface_alt_tree.xml',
     #'sources/data/haarcascades/haarcascade_frontalface_alt2.xml',
     #'sources/data/haarcascades/haarcascade_frontalface_default.xml',
     #'sources/data/haarcascades/haarcascade_profileface.xml',
-    
+
     #'sources/data/haarcascades_cuda/haarcascade_frontalface_alt.xml',
     #'sources/data/haarcascades_cuda/haarcascade_frontalface_alt_tree.xml',
     #'sources/data/haarcascades_cuda/haarcascade_frontalface_alt2.xml',
@@ -31,15 +41,13 @@ haarcascades = [
     'lbpcascade_animeface.xml', # https://github.com/nagadomi/lbpcascade_animeface
     ]
 
-
-image_size = 100
 count = 1
 
 def image_data(file, haarcascade):
     global count
-    cascade_file = datadir + '/' + haarcascade
+    cascade_file = os.path.join(datadir.replace('/', os.path.sep), haarcascade)
     print('{} {}'.format(file, cascade_file))
-    
+
     image = cv2.imread(file)
     image_gs = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY) # グレースケール画像を取得
     # =============================================================================
@@ -56,27 +64,28 @@ def image_data(file, haarcascade):
             x,y,w,h = face
             face = image[y:y+h,x:x+w]
             face = cv2.resize(face,(image_size,image_size))
-            newdir = os.path.join(*file.split(os.sep)[0:-1])+'_face'
+            newdir = str((os.path.sep).join(file.split(os.path.sep)[0:-1]))+'_face'
             if not os.path.exists(newdir):
                 os.mkdir(newdir)
-            cv2.imwrite(newdir+'/'+str(count)+'.png',face)
+            cv2.imwrite(os.path.join(newdir,str(count)+'.png'),face)
             count += 1
             print('    {} {}'.format(file, count))
     else:
         print('no face')
 
 def main():
-    subdirs = glob.glob(root_dir+'/**')
+    global count
+    subdirs = glob(os.path.join(scrpath,root_dirname, '**'))
     for subdir in subdirs:
         count = 1
         print('sub directory: {}'.format(subdir))
-        files = glob.glob(subdir+'/*.jpg')
+        files = glob(os.path.join(subdir, '*.jpg'))
         c=0
         for file in files:
             for haarcascade in haarcascades:
                 time.sleep(0.1)
                 print('  {:.2%} {}'.format((c/len(files)), file))
-                image_data(file.replace('/', os.sep), haarcascade)
+                image_data(file, haarcascade.replace('/', os.path.sep))
                 c+=1
 
 
