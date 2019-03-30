@@ -18,19 +18,29 @@ os.chdir(scrpath)
 # そのサブディレクトリ(*_face)に画像データを格納
 root_dirname = 'traindata'
 
+# 1枚の入力画像に対して何枚の画像を出力するか
+expand_num = 1000
+
 
 def expand_data(file, count_originalfile, output_dir):
     img = load_img(file)
     x = img_to_array(img)
     x = np.expand_dims(x, axis=0)
     datagen = ImageDataGenerator(
-        # params
+        channel_shift_range=100.0,
+        height_shift_range=0.3,
+        horizontal_flip=0.5,
+        rotation_range=360.0,
+        shear_range=0.5,
+        vertical_flip=0.5,
+        width_shift_range=0.3,
+        zoom_range=0.5,
     )
     g = datagen.flow(x, batch_size=1, save_to_dir=output_dir, save_prefix=os.path.splitext(
         os.path.basename(file))[0], save_format='png')
     count_batch = 0
-    for i in range(100):
-        print('  {:.2%} {} {}'.format((count_batch/100),
+    for i in range(expand_num):
+        print('       {:.2%} {} {}'.format((count_batch/expand_num),
                                       (os.path.splitext(os.path.basename(file))[0]), count_batch))
         batch = g.next()
         count_batch += 1
