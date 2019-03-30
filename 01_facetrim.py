@@ -4,18 +4,18 @@
 #   OpenCV (https://opencv.org/releases.html)
 #   $ pip install numpy pillow opencv-python opencv-contrib-python
 
-import cv2
-import os
 from glob import glob
 from PIL import Image
+import cv2
+import os
 import time
 
 scrpath = os.path.abspath(os.path.dirname(__file__))
 os.chdir(scrpath)
 
-# このスクリプトと同じディレクトリにtrフォルダを作成、
+# このスクリプトと同じディレクトリにdataフォルダを作成、
 # そのサブディレクトリに画像データを格納
-root_dirname = 'traindata'
+root_dirname = 'data'
 
 # OpenCVのインストール先(README.md.txtがあるディレクトリ)
 datadir = 'C:/opencv-4.0.1-vc14_vc15'
