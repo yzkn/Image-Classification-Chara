@@ -9,7 +9,7 @@ from keras.preprocessing.image import load_img, img_to_array
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-import time
+# import time
 
 scrpath = os.path.abspath(os.path.dirname(__file__))
 os.chdir(scrpath)
@@ -19,7 +19,7 @@ os.chdir(scrpath)
 root_dirname = 'traindata'
 
 # 1枚の入力画像に対して何枚の画像を出力するか
-expand_num = 1000
+expand_num = 100
 
 
 def expand_data(file, count_originalfile, output_dir):
@@ -28,13 +28,13 @@ def expand_data(file, count_originalfile, output_dir):
     x = np.expand_dims(x, axis=0)
     datagen = ImageDataGenerator(
         channel_shift_range=100.0,
-        height_shift_range=0.3,
-        horizontal_flip=0.5,
+        height_shift_range=0.1,
+        horizontal_flip=0.1,
         rotation_range=360.0,
-        shear_range=0.5,
-        vertical_flip=0.5,
-        width_shift_range=0.3,
-        zoom_range=0.5,
+        shear_range=0.1,
+        vertical_flip=0.1,
+        width_shift_range=0.1,
+        zoom_range=0.1,
     )
     g = datagen.flow(x, batch_size=1, save_to_dir=output_dir, save_prefix=os.path.splitext(
         os.path.basename(file))[0], save_format='png')
@@ -53,7 +53,7 @@ def main():
         files = glob(os.path.join(subdir, '*.png'))
         count_originalfile = 0
         for file in files:
-            time.sleep(0.1)
+            # time.sleep(0.1)
             print('  {:.2%} {}'.format((count_originalfile/len(files)), file))
             newdir = str((os.path.sep).join(
                 file.split(os.path.sep)[0:-1]))+'_expand'
