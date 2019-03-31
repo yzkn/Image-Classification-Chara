@@ -16,7 +16,7 @@ os.chdir(scrpath)
 
 # このスクリプトと同じディレクトリにdataフォルダを作成、
 # そのサブディレクトリ(*_face)に画像データを格納
-root_dirname = 'traindata'
+root_dirname = 'data'
 
 # 1枚の入力画像に対して何枚の画像を出力するか
 expand_num = 100
