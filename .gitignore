@@ -114,4 +114,4 @@ dmypy.json
 .pyre/
 
 # traindata
-traindata/
+data*_sample/
