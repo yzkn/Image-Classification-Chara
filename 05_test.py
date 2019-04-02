@@ -28,6 +28,9 @@ root_weight_dirname = 'weight'
 # テストデータを格納したディレクトリ
 root_test_dirname = 'test'
 
+# テスト結果を出力するテキストファイル名
+result_filename = 'test.txt'
+
 # リサイズ後のサイズ
 image_size = 100
 
@@ -62,22 +65,25 @@ def test(classes):
     # モデルのロード
     model = model_load(len(classes))
 
-    # テスト用画像取得
-    testdatas = glob(os.path.join(scrpath, root_dirname, root_test_dirname, '*.png'))
-    for testdata in testdatas:
-        img = image.load_img(testdata, target_size=(image_size, image_size))
-        x = image.img_to_array(img)
-        x = np.expand_dims(x, axis=0)
-        # rescaleと同じ比率
-        x = x / 255
-        pred = model.predict(x)[0]
+    with open(os.path.join(scrpath, root_dirname, root_test_dirname, result_filename), mode='a') as f:
+        # テスト用画像取得
+        testdatas = glob(os.path.join(scrpath, root_dirname, root_test_dirname, '*.png'))
+        for testdata in testdatas:
+            img = image.load_img(testdata, target_size=(image_size, image_size))
+            x = image.img_to_array(img)
+            x = np.expand_dims(x, axis=0)
+            # rescaleと同じ比率
+            x = x / 255
+            pred = model.predict(x)[0]
 
-        # 予測確率が高いトップを出力
-        # 今回は最も似ているクラスのみ出力したいので1にしているが、上位n個を表示させることも可能。
-        top = 1
-        top_indices = pred.argsort()[-top:][::-1]
-        result = [(classes[i], pred[i]) for i in top_indices]
-        print('{}: {}'.format(testdata, result))
+            # 予測確率が高いトップを出力
+            # 今回は最も似ているクラスのみ出力したいので1にしているが、上位n個を表示させることも可能。
+            top = 1
+            top_indices = pred.argsort()[-top:][::-1]
+            result = [(classes[i], pred[i]) for i in top_indices]
+            print('{}: {}'.format(testdata, result))
+            f.write('{}: {}\n'.format(testdata, result))
+        f.write('Complete\n')
 
 
 def main():
