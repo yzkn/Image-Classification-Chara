@@ -22,7 +22,7 @@ root_train_dirname = 'train'
 root_validate_dirname = 'validate'
 
 # 結果出力先
-result_dirname = 'result'
+root_weight_dirname = 'weight'
 
 # リサイズ後のサイズ
 image_size = 100
@@ -96,15 +96,15 @@ def train(classes, nb_train_samples, nb_validation_samples):
         validation_data=validation_generator,
         nb_val_samples=nb_validation_samples)
 
-    vgg_model.save_weights(os.path.join(scrpath, root_dirname, result_dirname, 'finetuning.h5'))
+    vgg_model.save_weights(os.path.join(scrpath, root_dirname, root_weight_dirname, 'finetuning.h5'))
 
     process_time = (time.time() - start)
-    print('Completed. {}sec', process_time)
+    print('Completed. {} sec', process_time)
 
 
 def main():
-    if not os.path.exists(os.path.join(scrpath, root_dirname, result_dirname)):
-        os.makedirs(os.path.join(scrpath, root_dirname, result_dirname), exist_ok=True)
+    if not os.path.exists(os.path.join(scrpath, root_dirname, root_weight_dirname)):
+        os.makedirs(os.path.join(scrpath, root_dirname, root_weight_dirname), exist_ok=True)
 
     subdirs = glob(os.path.join(scrpath, root_dirname, root_train_dirname, '**'))
     classes = []
