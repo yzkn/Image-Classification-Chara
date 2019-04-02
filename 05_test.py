@@ -9,6 +9,7 @@ from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 import numpy as np
 import os
+import shutil
 import sys
 import time
 
@@ -76,13 +77,13 @@ def test(classes):
             x = x / 255
             pred = model.predict(x)[0]
 
-            # 予測確率が高いトップを出力
-            # 今回は最も似ているクラスのみ出力したいので1にしているが、上位n個を表示させることも可能。
+            # TODO:予測結果を出力しつつ、ラベルを基にファイルをコピー(目視確認用)
             top = 1
             top_indices = pred.argsort()[-top:][::-1]
             result = [(classes[i], pred[i]) for i in top_indices]
             print('{}: {}'.format(testdata, result))
             f.write('{}: {}\n'.format(testdata, result))
+            shutil.copyfile(testdata, os.path.join(TEMP, os.path.basename(file)))
         f.write('Complete\n')
 
 
