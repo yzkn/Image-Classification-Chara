@@ -102,7 +102,7 @@ def train(classes, nb_train_samples, nb_validation_samples):
         scrpath, root_dirname, root_weight_dirname, 'finetuning.h5'))
 
     process_time = (time.time() - start)
-    print('Completed. {} sec', process_time)
+    print('Completed. {} sec'.format(process_time))
 
 
 def main():
