@@ -14,9 +14,12 @@ import os
 scrpath = os.path.abspath(os.path.dirname(__file__))
 os.chdir(scrpath)
 
-# このスクリプトと同じディレクトリにdataフォルダを作成、
-# そのサブディレクトリ(*_face)に画像データを格納
-root_dirname = 'data'
+# このスクリプトと同じディレクトリにresult01フォルダ、
+# そのサブディレクトリに画像データが格納されている
+input_dirname = 'result01'
+
+# 水増しした画像をこのディレクトリに出力
+output_dirname = 'result02'
 
 # 1枚の入力画像に対して何枚の画像を出力するか
 expand_num = 100
@@ -41,26 +44,33 @@ def expand_data(file, count_originalfile, output_dir):
     count_batch = 0
     for i in range(expand_num):
         print('       {:.2%} {} {}'.format((count_batch/expand_num),
-                                      (os.path.splitext(os.path.basename(file))[0]), count_batch))
+                                           (os.path.splitext(os.path.basename(file))[0]), count_batch))
         batch = g.next()
         count_batch += 1
 
 
 def main():
-    subdirs = glob(os.path.join(scrpath, root_dirname, '*_face'))
+    subdirs = glob(os.path.join(scrpath, input_dirname, '**'))
     for subdir in subdirs:
-        print('sub directory: {}'.format(subdir))
-        files = glob(os.path.join(subdir, '*.png'))
-        count_originalfile = 0
-        for file in files:
-            # time.sleep(0.1)
-            print('  {:.2%} {}'.format((count_originalfile/len(files)), file))
-            newdir = str((os.path.sep).join(
-                file.split(os.path.sep)[0:-1]))+'_expand'
-            if not os.path.exists(newdir):
-                os.mkdir(newdir)
-            expand_data(file, count_originalfile, newdir)
-            count_originalfile += 1
+        if os.path.isdir(subdir):
+            print('sub directory: {}'.format(subdir))
+            files = glob(os.path.join(subdir, '*.png'))
+            count_originalfile = 0
+            for file in files:
+                # time.sleep(0.1)
+                print('  {:.2%} {}'.format(
+                    (count_originalfile/len(files)), file))
+                newdir = os.path.join(
+                    scrpath,
+                    output_dirname,
+                    os.path.basename(
+                        (os.path.sep).join(file.split(os.path.sep)[0:-1])
+                    )
+                )
+                if not os.path.exists(newdir):
+                    os.makedirs(newdir, exist_ok=True)
+                expand_data(file, count_originalfile, newdir)
+                count_originalfile += 1
 
 
 if __name__ == '__main__':

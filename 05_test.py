@@ -1,5 +1,6 @@
 # Copyright (c) 2019 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
 
+from datetime import datetime
 from glob import glob
 from keras import optimizers
 from keras.applications.vgg16 import VGG16
@@ -18,7 +19,7 @@ os.chdir(scrpath)
 
 # このスクリプトと同じディレクトリにdatasetフォルダを作成、
 # そのサブディレクトリに訓練データと検証データからなるデータセットを格納
-root_dirname = 'dataset_sample'
+root_dirname = 'dataset'
 
 root_train_dirname = 'train'
 root_validate_dirname = 'validate'
@@ -30,10 +31,19 @@ root_weight_dirname = 'weight'
 root_test_dirname = 'test'
 
 # テスト結果を出力するテキストファイル名
-result_filename = 'test.txt'
+nowstr = datetime.now().strftime('%Y%m%d%H%M%S')
+result_filename = 'result-05_test-'+nowstr+'.txt'
+
+# テスト結果に応じてファイルを移動する先のディレクトリ
+root_classified_dirname = 'classified_' + nowstr
 
 # リサイズ後のサイズ
 image_size = 100
+
+
+# 正答率評価のための変数
+count_items_all = 0
+count_items_correct = 0
 
 
 def model_load(nb_classes):
@@ -62,32 +72,70 @@ def model_load(nb_classes):
 
 
 
-def test(classes):
+def test_files(classes):
+    global count_items_all
+    global count_items_correct
+
     # モデルのロード
     model = model_load(len(classes))
 
-    with open(os.path.join(scrpath, root_dirname, root_test_dirname, result_filename), mode='a') as f:
-        # テスト用画像取得
-        testdatas = glob(os.path.join(scrpath, root_dirname, root_test_dirname, '*.png'))
-        for testdata in testdatas:
-            img = image.load_img(testdata, target_size=(image_size, image_size))
-            x = image.img_to_array(img)
-            x = np.expand_dims(x, axis=0)
-            # rescaleと同じ比率
-            x = x / 255
-            pred = model.predict(x)[0]
+    # テスト用画像取得
+    testdatas = glob(os.path.join(scrpath, root_dirname, root_test_dirname, '*.png'))
+    for testdata in testdatas:
+        test(model, classes, testdata, '')
 
-            # TODO:予測結果を出力しつつ、ラベルを基にファイルをコピー(目視確認用)
-            top = 1
-            top_indices = pred.argsort()[-top:][::-1]
-            result = [(classes[i], pred[i]) for i in top_indices]
-            print('{}: {}'.format(testdata, result))
-            f.write('{}: {}\n'.format(testdata, result))
-            shutil.copyfile(testdata, os.path.join(TEMP, os.path.basename(file)))
-        f.write('Complete\n')
+    subdirs = glob(os.path.join(scrpath, root_dirname, root_test_dirname, '**'))
+    for subdir in subdirs:
+        if os.path.isdir(subdir):
+            print('sub directory: {}'.format(subdir))
+            testdatas = glob(os.path.join(subdir, '*.png'))
+            count_testfile = 0
+            for testdata in testdatas:
+                print('  {:.2%} {}'.format((count_testfile/len(testdatas)), testdata))
+                test(model, classes, testdata, os.path.basename(subdir))
+                count_testfile += 1
+    if count_items_all > 0:
+        mes = 'Complete. accuracy:{} / {} = {:.2%}\n'.format(count_items_correct, count_items_all, count_items_correct / count_items_all)
+    else:
+        mes = 'Complete.'
+    print(mes)
+    with open(os.path.join(scrpath, root_dirname, root_classified_dirname, result_filename), mode='a') as f:
+        f.write(mes)
+
+
+def test(model, classes, testdata, correct_answer):
+    global count_items_all
+    global count_items_correct
+
+    img = image.load_img(testdata, target_size=(image_size, image_size))
+    x = image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+    # rescaleと同じ比率
+    x = x / 255
+    pred = model.predict(x)[0]
+
+    top = 1
+    top_indices = pred.argsort()[-top:][::-1]
+    result = [(classes[i], pred[i]) for i in top_indices]
+    print('{}: {}'.format(testdata, result))
+    with open(os.path.join(scrpath, root_dirname, root_classified_dirname, result_filename), mode='a') as f:
+        f.write('{}: {}\n'.format(testdata, result))
+
+    if correct_answer != '':
+        count_items_all += 1
+        if correct_answer == result[0][0]:
+            count_items_correct += 1
+
+    dstdir = os.path.join(scrpath, root_dirname, root_classified_dirname, correct_answer + '-' + result[0][0])
+    if not os.path.exists(dstdir):
+        os.makedirs(dstdir, exist_ok=True)
+    shutil.copyfile(testdata, os.path.join(dstdir, os.path.basename(testdata)))
 
 
 def main():
+    if not os.path.exists(os.path.join(scrpath, root_dirname, root_classified_dirname)):
+        os.mkdir(os.path.join(scrpath, root_dirname, root_classified_dirname))
+
     if os.path.exists(os.path.join(scrpath, root_dirname, root_weight_dirname)):
         subdirs = glob(os.path.join(scrpath, root_dirname, root_train_dirname, '**'))
         classes = []
@@ -98,7 +146,7 @@ def main():
                 num_traindata = len(glob(os.path.join(subdir, '**')))
                 sum_traindata += num_traindata
                 classes.append(os.path.basename(subdir))
-        test(classes)
+        test_files(classes)
 
 
 if __name__ == '__main__':

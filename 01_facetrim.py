@@ -14,8 +14,11 @@ scrpath = os.path.abspath(os.path.dirname(__file__))
 os.chdir(scrpath)
 
 # このスクリプトと同じディレクトリにdataフォルダを作成、
-# そのサブディレクトリに画像データを格納
-root_dirname = 'data'
+# そのサブディレクトリに画像データが格納されている
+input_dirname = 'data'
+
+# 顔領域を切り出した画像をこのディレクトリに出力
+output_dirname = 'result01'
 
 # OpenCVのインストール先(README.md.txtがあるディレクトリ)
 datadir = 'C:/opencv-4.0.1-vc14_vc15'
@@ -65,30 +68,40 @@ def image_data(file, count_originalfile, haarcascade):
             x, y, w, h = face
             face = image[y:y+h, x:x+w]
             face = cv2.resize(face, (image_size, image_size))
-            newdir = str((os.path.sep).join(
-                file.split(os.path.sep)[0:-1]))+'_face'
+            newdir = os.path.join(
+                scrpath,
+                output_dirname,
+                os.path.basename(
+                    (os.path.sep).join(file.split(os.path.sep)[0:-1])
+                )
+            )
             if not os.path.exists(newdir):
-                os.mkdir(newdir)
-            output_file = os.path.join(newdir, str(count_originalfile)+'_'+str(count_face)+'.png')
+                os.makedirs(newdir, exist_ok=True)
+            output_file = os.path.join(newdir, str(
+                count_originalfile)+'_'+str(count_face)+'.png')
             cv2.imwrite(output_file, face)
             count_face += 1
-            print('         {:.2%} {}'.format((count_face/len(face_list)), output_file))
+            print('         {:.2%} {}'.format(
+                (count_face/len(face_list)), output_file))
     else:
         print('no face')
 
 
 def main():
-    subdirs = glob(os.path.join(scrpath, root_dirname, '**'))
+    subdirs = glob(os.path.join(scrpath, input_dirname, '**'))
     for subdir in subdirs:
-        print('sub directory: {}'.format(subdir))
-        files = glob(os.path.join(subdir, '*.jpg'))
-        count_originalfile = 0
-        for file in files:
-            for haarcascade in haarcascades:
-                time.sleep(0.1)
-                print('  {:.2%} {}'.format((count_originalfile/len(files)), file))
-                image_data(file, count_originalfile, haarcascade.replace('/', os.path.sep))
-                count_originalfile += 1
+        if os.path.isdir(subdir):
+            print('sub directory: {}'.format(subdir))
+            files = glob(os.path.join(subdir, '*.jpg'))
+            count_originalfile = 0
+            for file in files:
+                for haarcascade in haarcascades:
+                    time.sleep(0.1)
+                    print('  {:.2%} {}'.format(
+                        (count_originalfile/len(files)), file))
+                    image_data(file, count_originalfile,
+                               haarcascade.replace('/', os.path.sep))
+                    count_originalfile += 1
 
 
 if __name__ == '__main__':

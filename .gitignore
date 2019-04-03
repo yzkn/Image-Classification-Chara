@@ -115,3 +115,9 @@ dmypy.json
 
 # traindata
 data*_sample/
+
+# weight
+weight/*
+
+# result
+result*/*

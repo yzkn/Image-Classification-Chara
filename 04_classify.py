@@ -36,7 +36,8 @@ def vgg_model_maker(nb_classes):
     # VGG16をベースに
     # FC層(VGGの、1000クラスの分類結果を判別する層)は使用せずに、nb_classesクラスの判別を行うのでinclude_top=False
     input_tensor = Input(shape=(image_size, image_size, 3))
-    vgg16 = VGG16(include_top=False, weights='imagenet', input_tensor=input_tensor)
+    vgg16 = VGG16(include_top=False, weights='imagenet',
+                  input_tensor=input_tensor)
 
     # FC層を新規作成
     top_model = Sequential()
@@ -86,7 +87,8 @@ def train(classes, nb_train_samples, nb_validation_samples):
         layer.trainable = False
 
     # 損失関数を指定(カテゴリカル)
-    vgg_model.compile(loss='categorical_crossentropy', optimizer=optimizers.SGD(lr=1e-3, momentum=0.9), metrics=['accuracy'])
+    vgg_model.compile(loss='categorical_crossentropy', optimizer=optimizers.SGD(
+        lr=1e-3, momentum=0.9), metrics=['accuracy'])
     train_generator, validation_generator = image_generator(classes)
 
     history = vgg_model.fit_generator(
@@ -96,7 +98,8 @@ def train(classes, nb_train_samples, nb_validation_samples):
         validation_data=validation_generator,
         nb_val_samples=nb_validation_samples)
 
-    vgg_model.save_weights(os.path.join(scrpath, root_dirname, root_weight_dirname, 'finetuning.h5'))
+    vgg_model.save_weights(os.path.join(
+        scrpath, root_dirname, root_weight_dirname, 'finetuning.h5'))
 
     process_time = (time.time() - start)
     print('Completed. {} sec', process_time)
@@ -104,9 +107,11 @@ def train(classes, nb_train_samples, nb_validation_samples):
 
 def main():
     if not os.path.exists(os.path.join(scrpath, root_dirname, root_weight_dirname)):
-        os.makedirs(os.path.join(scrpath, root_dirname, root_weight_dirname), exist_ok=True)
+        os.makedirs(os.path.join(scrpath, root_dirname,
+                                 root_weight_dirname), exist_ok=True)
 
-    subdirs = glob(os.path.join(scrpath, root_dirname, root_train_dirname, '**'))
+    subdirs = glob(os.path.join(
+        scrpath, root_dirname, root_train_dirname, '**'))
     classes = []
     sum_traindata = 0
     sum_validate = 0
@@ -116,7 +121,8 @@ def main():
             if os.path.isdir(os.path.join(scrpath, root_dirname, root_validate_dirname, os.path.basename(subdir))):
                 # print('  {:.2%} {} {}'.format((count_originalfile/len(files)), subdir, file))
                 num_traindata = len(glob(os.path.join(subdir, '**')))
-                num_validate = len(glob(os.path.join(scrpath, root_dirname, root_validate_dirname, os.path.basename(subdir), '**')))
+                num_validate = len(glob(os.path.join(
+                    scrpath, root_dirname, root_validate_dirname, os.path.basename(subdir), '**')))
                 sum_traindata += num_traindata
                 sum_validate += num_validate
                 classes.append(os.path.basename(subdir))
