@@ -7,6 +7,7 @@
 from glob import glob
 from PIL import Image
 import cv2
+import logutil
 import os
 import time
 
@@ -105,4 +106,10 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    logutil.log_start(__file__)
+    try:
+        main()
+    except Exception as e:
+        logutil.log_exception()
+    finally:
+        logutil.log_end()

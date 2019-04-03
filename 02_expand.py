@@ -6,10 +6,10 @@
 from glob import glob
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import load_img, img_to_array
+import logutil
 import matplotlib.pyplot as plt
 import numpy as np
 import os
-# import time
 
 scrpath = os.path.abspath(os.path.dirname(__file__))
 os.chdir(scrpath)
@@ -74,4 +74,10 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    logutil.log_start(__file__)
+    try:
+        main()
+    except Exception as e:
+        logutil.log_exception()
+    finally:
+        logutil.log_end()

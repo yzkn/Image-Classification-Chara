@@ -8,6 +8,7 @@ from keras.layers import Input, Activation, Dropout, Flatten, Dense
 from keras.models import Sequential, Model
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
+import logutil
 import numpy as np
 import os
 import shutil
@@ -150,4 +151,10 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    logutil.log_start(__file__)
+    try:
+        main()
+    except Exception as e:
+        logutil.log_exception()
+    finally:
+        logutil.log_end()

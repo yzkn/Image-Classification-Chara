@@ -1,6 +1,7 @@
 # Copyright (c) 2019 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
 
 from glob import glob
+import logutil
 import os
 import random
 import shutil
@@ -54,4 +55,10 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    logutil.log_start(__file__)
+    try:
+        main()
+    except Exception as e:
+        logutil.log_exception()
+    finally:
+        logutil.log_end()
