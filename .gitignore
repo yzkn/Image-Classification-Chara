@@ -115,6 +115,9 @@ dmypy.json
 
 # traindata
 data*_sample/
+*.jpg
+*.jpeg
+*.png
 
 # weight
 weight/*
