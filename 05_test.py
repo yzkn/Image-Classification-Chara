@@ -33,7 +33,7 @@ root_weight_dirname = 'weight'
 root_test_dirname = 'test'
 
 # テスト結果を出力するテキストファイル名
-nowstr = datetime.now().strftime('%Y%m%d%H%M%S')
+nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 result_filename = 'result-05_test-'+nowstr+'.txt'
 
 # テスト結果に応じてファイルを移動する先のディレクトリ
