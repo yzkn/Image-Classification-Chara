@@ -7,6 +7,7 @@ from keras.layers import Input, Activation, Dropout, Flatten, Dense
 from keras.models import Sequential, Model
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import ImageDataGenerator
+import datetime
 import logutil
 import numpy as np
 import os
@@ -108,8 +109,12 @@ def train(classes, nb_train_samples, nb_validation_samples):
 
 def main():
     if not os.path.exists(os.path.join(scrpath, root_dirname, root_weight_dirname)):
-        os.makedirs(os.path.join(scrpath, root_dirname,
-                                 root_weight_dirname), exist_ok=True)
+        os.makedirs(os.path.join(scrpath, root_dirname, root_weight_dirname), exist_ok=True)
+    else:
+        nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        os.rename(os.path.join(scrpath, root_dirname, root_weight_dirname), os.path.join(
+            scrpath, root_dirname, root_weight_dirname + '_' + nowstr + '.bak'))
+        os.mkdir(os.path.join(scrpath, root_dirname, root_weight_dirname))
 
     subdirs = glob(os.path.join(
         scrpath, root_dirname, root_train_dirname, '**'))

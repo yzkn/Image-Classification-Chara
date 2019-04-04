@@ -1,6 +1,7 @@
 # Copyright (c) 2019 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
 
 from glob import glob
+import datetime
 import logutil
 import os
 import random
@@ -25,6 +26,14 @@ ratio_train = 0.8
 
 
 def main():
+    if not os.path.exists(os.path.join(scrpath, output_dirname)):
+        os.mkdir(os.path.join(scrpath, output_dirname))
+    else:
+        nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        os.rename(os.path.join(scrpath, output_dirname), os.path.join(
+            scrpath, output_dirname + '_' + nowstr + '.bak'))
+        os.mkdir(os.path.join(scrpath, output_dirname))
+
     subdirs = glob(os.path.join(scrpath, input_dirname, '**'))
     for subdir in subdirs:
         if os.path.isdir(subdir):

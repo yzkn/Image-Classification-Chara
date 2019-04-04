@@ -7,6 +7,7 @@
 from glob import glob
 from PIL import Image
 import cv2
+import datetime
 import logutil
 import os
 import time
@@ -16,7 +17,7 @@ os.chdir(scrpath)
 
 # このスクリプトと同じディレクトリにdataフォルダを作成、
 # そのサブディレクトリに画像データが格納されている
-input_dirname = 'data'
+input_dirname = 'data_sample'
 
 # 顔領域を切り出した画像をこのディレクトリに出力
 output_dirname = 'result01'
@@ -49,55 +50,66 @@ haarcascades = [
 
 
 def image_data(file, count_originalfile, haarcascade):
-    cascade_file = os.path.join(datadir.replace('/', os.path.sep), haarcascade)
-
-    image = cv2.imread(file)
-    image_gs = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # グレースケール画像を取得
-    # =============================================================================
-    #     scaleFactor 各画像スケールにおける縮小量を表します
-    #     minNeighbors 物体候補となる矩形は，最低でもこの数だけの近傍矩形を含む必要があります
-    #     minSize 物体が取り得る最小サイズ．これよりも小さい物体は無視されます
-    #     (http://opencv.jp/opencv-2.1/cpp/object_detection.html)
-    # =============================================================================
-    cascade = cv2.CascadeClassifier(cascade_file)
-    # 顔領域を取得
-    face_list = cascade.detectMultiScale(
-        image_gs, scaleFactor=1.1, minNeighbors=1, minSize=(min_face_size, min_face_size))
-    if len(face_list) > 0:
-        count_face = 0
-        for i, face in enumerate(face_list):
-            x, y, w, h = face
-            face = image[y:y+h, x:x+w]
-            face = cv2.resize(face, (image_size, image_size))
-            newdir = os.path.join(
-                scrpath,
-                output_dirname,
-                os.path.basename(
-                    (os.path.sep).join(file.split(os.path.sep)[0:-1])
-                )
-            )
-            if not os.path.exists(newdir):
-                os.makedirs(newdir, exist_ok=True)
-            output_file = os.path.join(newdir, str(
-                count_originalfile)+'_'+str(count_face)+'.png')
-            cv2.imwrite(output_file, face)
-            count_face += 1
-            print('         {:.2%} {}'.format(
-                (count_face/len(face_list)), output_file))
-    else:
-        print('no face')
+    if os.path.exists(file) and os.path.isfile(file):
+        cascade_file = os.path.join(
+            datadir.replace('/', os.path.sep), haarcascade)
+        if os.path.exists(cascade_file) and os.path.isfile(cascade_file):
+            image = cv2.imread(file)
+            image_gs = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)  # グレースケール画像を取得
+            # =============================================================================
+            #     scaleFactor 各画像スケールにおける縮小量を表します
+            #     minNeighbors 物体候補となる矩形は，最低でもこの数だけの近傍矩形を含む必要があります
+            #     minSize 物体が取り得る最小サイズ．これよりも小さい物体は無視されます
+            #     (http://opencv.jp/opencv-2.1/cpp/object_detection.html)
+            # =============================================================================
+            cascade = cv2.CascadeClassifier(cascade_file)
+            # 顔領域を取得
+            face_list = cascade.detectMultiScale(
+                image_gs, scaleFactor=1.1, minNeighbors=1, minSize=(min_face_size, min_face_size))
+            if len(face_list) > 0:
+                count_face = 0
+                for i, face in enumerate(face_list):
+                    x, y, w, h = face
+                    face = image[y:y+h, x:x+w]
+                    face = cv2.resize(face, (image_size, image_size))
+                    newdir = os.path.join(
+                        scrpath,
+                        output_dirname,
+                        os.path.basename(
+                            (os.path.sep).join(file.split(os.path.sep)[0:-1])
+                        )
+                    )
+                    if not os.path.exists(newdir):
+                        os.makedirs(newdir, exist_ok=True)
+                    output_file = os.path.join(newdir, str(
+                        count_originalfile)+'_'+str(count_face)+'.png')
+                    cv2.imwrite(output_file, face)
+                    count_face += 1
+                    print('         {:.2%} {}'.format(
+                        (count_face/len(face_list)), output_file))
+            else:
+                print('no face')
+        else:
+            print('no cascade_file')
 
 
 def main():
+    if not os.path.exists(os.path.join(scrpath, output_dirname)):
+        os.mkdir(os.path.join(scrpath, output_dirname))
+    else:
+        nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        os.rename(os.path.join(scrpath, output_dirname), os.path.join(
+            scrpath, output_dirname + '_' + nowstr + '.bak'))
+        os.mkdir(os.path.join(scrpath, output_dirname))
+
     subdirs = glob(os.path.join(scrpath, input_dirname, '**'))
     for subdir in subdirs:
-        if os.path.isdir(subdir):
+        if os.path.exists(subdir) and os.path.isdir(subdir):
             print('sub directory: {}'.format(subdir))
             files = glob(os.path.join(subdir, '*.jpg'))
             count_originalfile = 0
             for file in files:
                 for haarcascade in haarcascades:
-                    time.sleep(0.1)
                     print('  {:.2%} {}'.format(
                         (count_originalfile/len(files)), file))
                     image_data(file, count_originalfile,

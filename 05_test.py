@@ -8,6 +8,7 @@ from keras.layers import Input, Activation, Dropout, Flatten, Dense
 from keras.models import Sequential, Model
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
+import datetime
 import logutil
 import numpy as np
 import os
@@ -135,6 +136,11 @@ def test(model, classes, testdata, correct_answer):
 
 def main():
     if not os.path.exists(os.path.join(scrpath, root_dirname, root_classified_dirname)):
+        os.mkdir(os.path.join(scrpath, root_dirname, root_classified_dirname))
+    else:
+        nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        os.rename(os.path.join(scrpath, root_dirname, root_classified_dirname), os.path.join(
+            scrpath, root_dirname, root_classified_dirname + '_' + nowstr + '.bak'))
         os.mkdir(os.path.join(scrpath, root_dirname, root_classified_dirname))
 
     if os.path.exists(os.path.join(scrpath, root_dirname, root_weight_dirname)):

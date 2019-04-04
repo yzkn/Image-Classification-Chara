@@ -6,6 +6,7 @@
 from glob import glob
 from keras.preprocessing.image import ImageDataGenerator
 from keras.preprocessing.image import load_img, img_to_array
+import datetime
 import logutil
 import matplotlib.pyplot as plt
 import numpy as np
@@ -50,6 +51,14 @@ def expand_data(file, count_originalfile, output_dir):
 
 
 def main():
+    if not os.path.exists(os.path.join(scrpath, output_dirname)):
+        os.mkdir(os.path.join(scrpath, output_dirname))
+    else:
+        nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        os.rename(os.path.join(scrpath, output_dirname), os.path.join(
+            scrpath, output_dirname + '_' + nowstr + '.bak'))
+        os.mkdir(os.path.join(scrpath, output_dirname))
+
     subdirs = glob(os.path.join(scrpath, input_dirname, '**'))
     for subdir in subdirs:
         if os.path.isdir(subdir):
