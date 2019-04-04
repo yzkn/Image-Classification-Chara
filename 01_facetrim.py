@@ -17,7 +17,7 @@ os.chdir(scrpath)
 
 # このスクリプトと同じディレクトリにdataフォルダを作成、
 # そのサブディレクトリに画像データが格納されている
-input_dirname = 'data_sample'
+input_dirname = 'data'
 
 # 顔領域を切り出した画像をこのディレクトリに出力
 output_dirname = 'result01'

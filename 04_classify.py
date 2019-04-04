@@ -109,7 +109,8 @@ def train(classes, nb_train_samples, nb_validation_samples):
 
 def main():
     if not os.path.exists(os.path.join(scrpath, root_dirname, root_weight_dirname)):
-        os.makedirs(os.path.join(scrpath, root_dirname, root_weight_dirname), exist_ok=True)
+        os.makedirs(os.path.join(scrpath, root_dirname,
+                                 root_weight_dirname), exist_ok=True)
     else:
         nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
         os.rename(os.path.join(scrpath, root_dirname, root_weight_dirname), os.path.join(

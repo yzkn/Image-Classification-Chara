@@ -52,7 +52,8 @@ def model_load(nb_classes):
     # VGG16をベースに
     # FC層(VGGの、1000クラスの分類結果を判別する層)は使用せずに、nb_classesクラスの判別を行うのでinclude_top=False
     input_tensor = Input(shape=(image_size, image_size, 3))
-    vgg16 = VGG16(include_top=False, weights='imagenet', input_tensor=input_tensor)
+    vgg16 = VGG16(include_top=False, weights='imagenet',
+                  input_tensor=input_tensor)
 
     # FC層を新規作成
     top_model = Sequential()
@@ -65,13 +66,14 @@ def model_load(nb_classes):
     model = Model(input=vgg16.input, output=top_model(vgg16.output))
 
     # 学習済みの重みをロード
-    model.load_weights(os.path.join(scrpath, root_dirname, root_weight_dirname, 'finetuning.h5'))
+    model.load_weights(os.path.join(scrpath, root_dirname,
+                                    root_weight_dirname, 'finetuning.h5'))
 
     # 損失関数を指定(カテゴリカル)
-    model.compile(loss='categorical_crossentropy', optimizer=optimizers.SGD(lr=1e-3, momentum=0.9), metrics=['accuracy'])
+    model.compile(loss='categorical_crossentropy', optimizer=optimizers.SGD(
+        lr=1e-3, momentum=0.9), metrics=['accuracy'])
 
     return model
-
 
 
 def test_files(classes):
@@ -82,22 +84,26 @@ def test_files(classes):
     model = model_load(len(classes))
 
     # テスト用画像取得
-    testdatas = glob(os.path.join(scrpath, root_dirname, root_test_dirname, '*.png'))
+    testdatas = glob(os.path.join(
+        scrpath, root_dirname, root_test_dirname, '*.png'))
     for testdata in testdatas:
         test(model, classes, testdata, '')
 
-    subdirs = glob(os.path.join(scrpath, root_dirname, root_test_dirname, '**'))
+    subdirs = glob(os.path.join(
+        scrpath, root_dirname, root_test_dirname, '**'))
     for subdir in subdirs:
         if os.path.isdir(subdir):
             print('sub directory: {}'.format(subdir))
             testdatas = glob(os.path.join(subdir, '*.png'))
             count_testfile = 0
             for testdata in testdatas:
-                print('  {:.2%} {}'.format((count_testfile/len(testdatas)), testdata))
+                print('  {:.2%} {}'.format(
+                    (count_testfile/len(testdatas)), testdata))
                 test(model, classes, testdata, os.path.basename(subdir))
                 count_testfile += 1
     if count_items_all > 0:
-        mes = 'Complete. accuracy:{} / {} = {:.2%}\n'.format(count_items_correct, count_items_all, count_items_correct / count_items_all)
+        mes = 'Complete. accuracy:{} / {} = {:.2%}\n'.format(
+            count_items_correct, count_items_all, count_items_correct / count_items_all)
     else:
         mes = 'Complete.'
     print(mes)
@@ -128,7 +134,8 @@ def test(model, classes, testdata, correct_answer):
         if correct_answer == result[0][0]:
             count_items_correct += 1
 
-    dstdir = os.path.join(scrpath, root_dirname, root_classified_dirname, correct_answer + '-' + result[0][0])
+    dstdir = os.path.join(
+        scrpath, root_dirname, root_classified_dirname, correct_answer + '-' + result[0][0])
     if not os.path.exists(dstdir):
         os.makedirs(dstdir, exist_ok=True)
     shutil.copyfile(testdata, os.path.join(dstdir, os.path.basename(testdata)))
@@ -144,7 +151,8 @@ def main():
         os.mkdir(os.path.join(scrpath, root_dirname, root_classified_dirname))
 
     if os.path.exists(os.path.join(scrpath, root_dirname, root_weight_dirname)):
-        subdirs = glob(os.path.join(scrpath, root_dirname, root_train_dirname, '**'))
+        subdirs = glob(os.path.join(
+            scrpath, root_dirname, root_train_dirname, '**'))
         classes = []
         sum_traindata = 0
         for subdir in subdirs:
