@@ -18,11 +18,13 @@ input_dirname = 'result02'
 # 訓練データと検証データに分割したデータセットをこのディレクトリに出力
 output_dirname = 'dataset'
 
-output_train_dirname = 'train'    # 訓練データ
+output_train_dirname = 'train'        # 訓練データ
 output_validate_dirname = 'validate'  # 検証データ
+output_test_dirname = 'test'          # テストデータ
 
-# 訓練データに振り分ける割合
-ratio_train = 0.8
+# 訓練データ、検証データ（、テストデータ）に振り分ける割合
+ratio_train = 0.6
+ratio_validate = 0.2
 
 
 def main():
@@ -42,7 +44,9 @@ def main():
                 os.path.join(scrpath, output_dirname,
                              output_train_dirname, os.path.basename(subdir)),
                 os.path.join(scrpath, output_dirname,
-                             output_validate_dirname, os.path.basename(subdir))
+                             output_validate_dirname, os.path.basename(subdir)),
+                os.path.join(scrpath, output_dirname,
+                             output_test_dirname, os.path.basename(subdir))
             ]
             for newdir in newdirs:
                 if not os.path.exists(newdir):
@@ -57,9 +61,12 @@ def main():
                     if random.random() <= ratio_train:
                         shutil.copyfile(file, os.path.join(
                             newdirs[0], os.path.basename(file)))
-                    else:
+                    elif random.random() <= ratio_train + ratio_validate:
                         shutil.copyfile(file, os.path.join(
                             newdirs[1], os.path.basename(file)))
+                    else:
+                        shutil.copyfile(file, os.path.join(
+                            newdirs[2], os.path.basename(file)))
                 count_originalfile += 1
 
 
