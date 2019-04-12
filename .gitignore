@@ -125,3 +125,9 @@ weight/*
 # result
 result*/*
 log/
+
+
+
+
+
+.vscode/

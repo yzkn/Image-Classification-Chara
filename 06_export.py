@@ -1,4 +1,6 @@
 # Copyright (c) 2019 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
+
+# remove the restriction of path strength before this pip command (LongPathsEnabled in the regedit)
 # $ pip install tensorflowjs
 
 from datetime import datetime
@@ -10,6 +12,7 @@ from keras.models import Sequential, Model
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 import datetime
+import logutil
 import numpy as np
 import os
 import shutil
@@ -107,6 +110,3 @@ if __name__ == '__main__':
         logutil.log_exception()
     finally:
         logutil.log_end()
-
-
-tfjs.converters.save_keras_model(model, '/gdrive/My Drive/tfjs')
