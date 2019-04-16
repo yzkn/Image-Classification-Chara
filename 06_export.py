@@ -39,7 +39,7 @@ root_export_dirname = 'tfjs'
 
 # テスト結果を出力するテキストファイル名
 nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
-result_filename = 'result-05_test-'+nowstr+'.txt'
+result_filename = 'result-06_test-'+nowstr+'.txt'
 
 # リサイズ後のサイズ
 image_size = 100
