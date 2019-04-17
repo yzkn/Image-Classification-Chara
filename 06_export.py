@@ -81,7 +81,7 @@ def export(classes):
     tensorflowjs.converters.save_keras_model(model, os.path.join(
         scrpath, root_dirname, root_export_dirname))
 
-    mes = 'Complete.'
+    mes = 'Complete. Classes: ['+ ','.join(classes) + ']'
     print(mes)
     with open(os.path.join(scrpath, root_dirname, root_export_dirname, result_filename), mode='a') as f:
         f.write(mes)
