@@ -12,6 +12,7 @@ from keras.models import Sequential, Model
 from keras.preprocessing import image
 from keras.preprocessing.image import ImageDataGenerator
 import datetime
+import json
 import logutil
 import numpy as np
 import os
@@ -40,6 +41,7 @@ root_export_dirname = 'tfjs'
 # テスト結果を出力するテキストファイル名
 nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 result_filename = 'result-06_test-'+nowstr+'.txt'
+result_json_filename = 'class.json'
 
 # リサイズ後のサイズ
 image_size = 100
@@ -81,7 +83,10 @@ def export(classes):
     tensorflowjs.converters.save_keras_model(model, os.path.join(
         scrpath, root_dirname, root_export_dirname))
 
-    mes = 'Complete. Classes: ['+ ','.join(classes) + ']'
+    with open(os.path.join(scrpath, root_dirname, root_export_dirname, result_json_filename), mode='a') as f:
+        json.dump(classes, f)
+
+    mes = 'Complete. Classes: [' + ','.join(classes) + ']'
     print(mes)
     with open(os.path.join(scrpath, root_dirname, root_export_dirname, result_filename), mode='a') as f:
         f.write(mes)
