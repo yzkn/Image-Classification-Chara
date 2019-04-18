@@ -86,11 +86,11 @@ def image_data(file, count_originalfile, haarcascade):
                     cv2.imwrite(output_file, face)
                     count_face += 1
                     print('         {:.2%} {}'.format(
-                        (count_face/len(face_list)), output_file))
+                        (count_face/len(face_list)), output_file), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
             else:
-                print('no face')
+                print('no face', datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
         else:
-            print('no cascade_file')
+            print('no cascade_file', datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
 
 
 def main():
@@ -105,13 +105,13 @@ def main():
     subdirs = glob(os.path.join(scrpath, input_dirname, '**'))
     for subdir in subdirs:
         if os.path.exists(subdir) and os.path.isdir(subdir):
-            print('sub directory: {}'.format(subdir))
+            print('sub directory: {}'.format(subdir), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
             files = glob(os.path.join(subdir, '*.jpg'))
             count_originalfile = 0
             for file in files:
                 for haarcascade in haarcascades:
                     print('  {:.2%} {}'.format(
-                        (count_originalfile/len(files)), file))
+                        (count_originalfile/len(files)), file), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
                     image_data(file, count_originalfile,
                                haarcascade.replace('/', os.path.sep))
                     count_originalfile += 1

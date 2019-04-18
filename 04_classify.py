@@ -104,7 +104,7 @@ def train(classes, nb_train_samples, nb_validation_samples):
         scrpath, root_dirname, root_weight_dirname, 'finetuning.h5'))
 
     process_time = (time.time() - start)
-    print('Completed. {} sec'.format(process_time))
+    print('Completed. {} sec'.format(process_time), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
 
 
 def main():
@@ -124,9 +124,9 @@ def main():
     sum_validate = 0
     for subdir in subdirs:
         if os.path.isdir(subdir):
-            print('sub directory: {}'.format(subdir))
+            print('sub directory: {}'.format(subdir), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
             if os.path.isdir(os.path.join(scrpath, root_dirname, root_validate_dirname, os.path.basename(subdir))):
-                # print('  {:.2%} {} {}'.format((count_originalfile/len(files)), subdir, file))
+                # print('  {:.2%} {} {}'.format((count_originalfile/len(files)), subdir, file), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
                 num_traindata = len(glob(os.path.join(subdir, '**')))
                 num_validate = len(glob(os.path.join(
                     scrpath, root_dirname, root_validate_dirname, os.path.basename(subdir), '**')))

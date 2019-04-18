@@ -66,10 +66,10 @@ def log_exception(file=__file__):
             # 例外ログファイルに書き出し
             t, v, tb = sys.exc_info()
             with open(log_filepath, 'a') as f:
-                print(traceback.format_exception(t, v, tb), file=f)
-                print(traceback.format_tb(e.__traceback__), file=f)
+                print(traceback.format_exception(t, v, tb), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), file=f)
+                print(traceback.format_tb(e.__traceback__), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), file=f)
     except:
         t, v, tb = sys.exc_info()
         with open(log_filepath, 'a') as f:
-            print(traceback.format_exception(t, v, tb), file=sys.stderr)
-            print(traceback.format_tb(e.__traceback__), file=sys.stderr)
+            print(traceback.format_exception(t, v, tb), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), file=sys.stderr)
+            print(traceback.format_tb(e.__traceback__), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), file=sys.stderr)

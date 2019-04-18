@@ -114,6 +114,7 @@ dmypy.json
 .pyre/
 
 # traindata
+data*.bak/
 data*_sample/
 *.jpg
 *.jpeg

@@ -83,13 +83,16 @@ def export(classes):
     tensorflowjs.converters.save_keras_model(model, os.path.join(
         scrpath, root_dirname, root_export_dirname))
 
+    classes_dict = {}
+    for i, cl in enumerate(classes):
+        classes_dict[i] = cl
     with open(os.path.join(scrpath, root_dirname, root_export_dirname, result_json_filename), mode='a') as f:
-        json.dump(classes, f)
+        json.dump(classes_dict, f)
 
-    mes = 'Complete. Classes: [' + ','.join(classes) + ']'
+    mes = 'Complete. Classes: [' + ','.join(classes) + '] ' + datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
     print(mes)
     with open(os.path.join(scrpath, root_dirname, root_export_dirname, result_filename), mode='a') as f:
-        f.write(mes)
+        f.write(mes + '\n')
 
 
 def main():
@@ -100,7 +103,7 @@ def main():
         sum_traindata = 0
         for subdir in subdirs:
             if os.path.isdir(subdir):
-                print('sub directory: {}'.format(subdir))
+                print('sub directory: {}'.format(subdir), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
                 num_traindata = len(glob(os.path.join(subdir, '**')))
                 sum_traindata += num_traindata
                 classes.append(os.path.basename(subdir))

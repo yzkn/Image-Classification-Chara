@@ -45,7 +45,7 @@ def expand_data(file, count_originalfile, output_dir):
     count_batch = 0
     for i in range(expand_num):
         print('       {:.2%} {} {}'.format((count_batch/expand_num),
-                                           (os.path.splitext(os.path.basename(file))[0]), count_batch))
+                                           (os.path.splitext(os.path.basename(file))[0]), count_batch), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
         batch = g.next()
         count_batch += 1
 
@@ -62,13 +62,13 @@ def main():
     subdirs = glob(os.path.join(scrpath, input_dirname, '**'))
     for subdir in subdirs:
         if os.path.isdir(subdir):
-            print('sub directory: {}'.format(subdir))
+            print('sub directory: {}'.format(subdir), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
             files = glob(os.path.join(subdir, '*.png'))
             count_originalfile = 0
             for file in files:
                 # time.sleep(0.1)
                 print('  {:.2%} {}'.format(
-                    (count_originalfile/len(files)), file))
+                    (count_originalfile/len(files)), file), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
                 newdir = os.path.join(
                     scrpath,
                     output_dirname,

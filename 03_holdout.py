@@ -39,7 +39,7 @@ def main():
     subdirs = glob(os.path.join(scrpath, input_dirname, '**'))
     for subdir in subdirs:
         if os.path.isdir(subdir):
-            print('sub directory: {}'.format(subdir))
+            print('sub directory: {}'.format(subdir), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
             newdirs = [
                 os.path.join(scrpath, output_dirname,
                              output_train_dirname, os.path.basename(subdir)),
@@ -56,7 +56,7 @@ def main():
             count_originalfile = 0
             for file in files:
                 print('  {:.2%} {} {}'.format(
-                    (count_originalfile/len(files)), subdir, file))
+                    (count_originalfile/len(files)), subdir, file), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
                 if os.path.isfile(file):
                     if random.random() <= ratio_train:
                         shutil.copyfile(file, os.path.join(

@@ -93,22 +93,23 @@ def test_files(classes):
         scrpath, root_dirname, root_test_dirname, '**'))
     for subdir in subdirs:
         if os.path.isdir(subdir):
-            print('sub directory: {}'.format(subdir))
+            print('sub directory: {}'.format(subdir), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
             testdatas = glob(os.path.join(subdir, '*.png'))
             count_testfile = 0
             for testdata in testdatas:
                 print('  {:.2%} {}'.format(
-                    (count_testfile/len(testdatas)), testdata))
+                    (count_testfile/len(testdatas)), testdata), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
                 test(model, classes, testdata, os.path.basename(subdir))
                 count_testfile += 1
     if count_items_all > 0:
-        mes = 'Complete. accuracy:{} / {} = {:.2%}\n'.format(
+        mes = 'Complete. accuracy:{} / {} = {:.2%}'.format(
             count_items_correct, count_items_all, count_items_correct / count_items_all)
     else:
         mes = 'Complete.'
+    mes += ' ' + datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
     print(mes)
     with open(os.path.join(scrpath, root_dirname, root_classified_dirname, result_filename), mode='a') as f:
-        f.write(mes)
+        f.write(mes + '\n')
 
 
 def test(model, classes, testdata, correct_answer):
@@ -125,9 +126,9 @@ def test(model, classes, testdata, correct_answer):
     top = 1
     top_indices = pred.argsort()[-top:][::-1]
     result = [(classes[i], pred[i]) for i in top_indices]
-    print('{}: {}'.format(testdata, result))
+    print('{}: {} {}'.format(testdata, result, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
     with open(os.path.join(scrpath, root_dirname, root_classified_dirname, result_filename), mode='a') as f:
-        f.write('{}: {}\n'.format(testdata, result))
+        f.write('{}: {} {}\n'.format(testdata, result, datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')))
 
     if correct_answer != '':
         count_items_all += 1
@@ -157,7 +158,7 @@ def main():
         sum_traindata = 0
         for subdir in subdirs:
             if os.path.isdir(subdir):
-                print('sub directory: {}'.format(subdir))
+                print('sub directory: {}'.format(subdir), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
                 num_traindata = len(glob(os.path.join(subdir, '**')))
                 sum_traindata += num_traindata
                 classes.append(os.path.basename(subdir))
