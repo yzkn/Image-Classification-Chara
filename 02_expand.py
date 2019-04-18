@@ -1,7 +1,7 @@
 # Copyright (c) 2019 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
 
 # Required:
-#   $ pip install keras_preprocessing tensorflow
+#   $ pip install keras_preprocessing tensorflow matplotlib
 
 from glob import glob
 from keras.preprocessing.image import ImageDataGenerator
