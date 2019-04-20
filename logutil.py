@@ -42,7 +42,7 @@ def log_end():
         log_exception()
 
 
-def log_exception(file=__file__):
+def log_exception(file=__file__, e=None):
     scrpath = ''
     try:
         # 引数からスクリプトが存在するディレクトリのパスを取得

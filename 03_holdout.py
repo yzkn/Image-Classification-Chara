@@ -75,6 +75,6 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        logutil.log_exception()
+        logutil.log_exception(e)
     finally:
         logutil.log_end()

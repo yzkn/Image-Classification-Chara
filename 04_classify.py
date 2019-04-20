@@ -31,7 +31,7 @@ image_size = 100
 
 # パラメータ
 batch_size = 16
-nb_epoch = 10
+nb_epoch = 1
 
 
 def vgg_model_maker(nb_classes):
@@ -49,7 +49,7 @@ def vgg_model_maker(nb_classes):
     top_model.add(Dense(nb_classes, activation='softmax'))
 
     # vgg16のFC層以外に、top_modelを結合
-    model = Model(input=vgg16.input, output=top_model(vgg16.output))
+    model = Model(inputs=vgg16.input, outputs=top_model(vgg16.output))
     return model
 
 
@@ -95,10 +95,10 @@ def train(classes, nb_train_samples, nb_validation_samples):
 
     history = vgg_model.fit_generator(
         train_generator,
-        samples_per_epoch=nb_train_samples,
-        nb_epoch=nb_epoch,
+        epochs=nb_epoch,
+        steps_per_epoch=int(nb_train_samples/batch_size),
         validation_data=validation_generator,
-        nb_val_samples=nb_validation_samples)
+        validation_steps=int(nb_validation_samples/batch_size))
 
     vgg_model.save_weights(os.path.join(
         scrpath, root_dirname, root_weight_dirname, 'finetuning.h5'))
@@ -141,6 +141,6 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        logutil.log_exception()
+        logutil.log_exception(e)
     finally:
         logutil.log_end()
