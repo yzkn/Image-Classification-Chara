@@ -22,9 +22,10 @@ output_train_dirname = 'train'        # 訓練データ
 output_validate_dirname = 'validate'  # 検証データ
 output_test_dirname = 'test'          # テストデータ
 
-# 訓練データ、検証データ（、テストデータ）に振り分ける割合
-ratio_train = 0.6
-ratio_validate = 0.2
+# 訓練データ、検証データ、テストデータに振り分ける割合(和が1でなくてもよい)
+ratio_train = 0.06
+ratio_validate = 0.02
+ratio_test = 0.02
 
 
 def main():
@@ -39,7 +40,8 @@ def main():
     subdirs = glob(os.path.join(scrpath, input_dirname, '**'))
     for subdir in subdirs:
         if os.path.isdir(subdir):
-            print('sub directory: {}'.format(subdir), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+            print('sub directory: {}'.format(subdir),
+                  datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
             newdirs = [
                 os.path.join(scrpath, output_dirname,
                              output_train_dirname, os.path.basename(subdir)),
@@ -64,9 +66,11 @@ def main():
                     elif random.random() <= ratio_train + ratio_validate:
                         shutil.copyfile(file, os.path.join(
                             newdirs[1], os.path.basename(file)))
-                    else:
+                    elif random.random() <= ratio_train + ratio_validate + ratio_test:
                         shutil.copyfile(file, os.path.join(
                             newdirs[2], os.path.basename(file)))
+                    else:
+                        pass
                 count_originalfile += 1
 
 
