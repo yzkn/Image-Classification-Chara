@@ -49,8 +49,8 @@ def vgg_model_maker(nb_classes):
     top_model.add(Dense(nb_classes, activation='softmax'))
 
     # vgg16のFC層以外に、top_modelを結合
-    model = Model(input=vgg16.input, output=top_model(vgg16.output))
-    # model = Model(inputs=vgg16.input, outputs=top_model(vgg16.output))
+    # model = Model(input=vgg16.input, output=top_model(vgg16.output))
+    model = Model(inputs=vgg16.input, outputs=top_model(vgg16.output))
     return model
 
 
@@ -98,12 +98,12 @@ def train(classes, nb_train_samples, nb_validation_samples):
         train_generator,
         validation_data=validation_generator,
 
-        nb_epoch=nb_epoch,
-        nb_val_samples=nb_validation_samples,
-        samples_per_epoch=nb_train_samples
-        # epochs=nb_epoch,
-        # steps_per_epoch=int(nb_train_samples/batch_size),
-        # validation_steps=int(nb_validation_samples/batch_size)
+        # nb_epoch=nb_epoch,
+        # nb_val_samples=nb_validation_samples,
+        # samples_per_epoch=nb_train_samples
+        epochs=nb_epoch,
+        steps_per_epoch=nb_train_samples//batch_size,
+        validation_steps=nb_validation_samples//batch_size
         )
 
     vgg_model.save_weights(os.path.join(
