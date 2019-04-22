@@ -101,6 +101,8 @@ def train(classes, nb_train_samples, nb_validation_samples):
         # nb_epoch=nb_epoch,
         # nb_val_samples=nb_validation_samples,
         # samples_per_epoch=nb_train_samples
+        workers=1,
+        use_multiprocessing=False,
         epochs=nb_epoch,
         steps_per_epoch=nb_train_samples//batch_size,
         validation_steps=nb_validation_samples//batch_size
