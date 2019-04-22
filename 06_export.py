@@ -1,5 +1,7 @@
 # Copyright (c) 2019 YA-androidapp(https://github.com/YA-androidapp) All rights reserved.
 
+# $ tensorflowjs_converter --input_format=keras dataset/weight/finetuning.h5 tfjs
+
 # remove the restriction of path strength before this pip command (LongPathsEnabled in the regedit)
 # $ pip install tensorflowjs
 
@@ -89,7 +91,8 @@ def export(classes):
     with open(os.path.join(scrpath, root_dirname, root_export_dirname, result_json_filename), mode='a') as f:
         json.dump(classes_dict, f)
 
-    mes = 'Complete. Classes: [' + ','.join(classes) + '] ' + datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    mes = 'Complete. Classes: [' + ','.join(classes) + '] ' + \
+        datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
     print(mes)
     with open(os.path.join(scrpath, root_dirname, root_export_dirname, result_filename), mode='a') as f:
         f.write(mes + '\n')
@@ -103,7 +106,8 @@ def main():
         sum_traindata = 0
         for subdir in subdirs:
             if os.path.isdir(subdir):
-                print('sub directory: {}'.format(subdir), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+                print('sub directory: {}'.format(subdir),
+                      datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
                 num_traindata = len(glob(os.path.join(subdir, '**')))
                 sum_traindata += num_traindata
                 classes.append(os.path.basename(subdir))
