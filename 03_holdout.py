@@ -57,16 +57,17 @@ def main():
             files = glob(os.path.join(subdir, '*.png'))
             count_originalfile = 0
             for file in files:
-                print('  {:.2%} {} {}'.format(
-                    (count_originalfile/len(files)), subdir, file), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+                rnd = random.random()
+                print('  {:.2%} {:.2} {} {}'.format(
+                    (count_originalfile/len(files)), rnd, subdir, file), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
                 if os.path.isfile(file):
-                    if random.random() <= ratio_train:
+                    if rnd <= ratio_train:
                         shutil.copyfile(file, os.path.join(
                             newdirs[0], os.path.basename(file)))
-                    elif random.random() <= ratio_train + ratio_validate:
+                    elif rnd <= ratio_train + ratio_validate:
                         shutil.copyfile(file, os.path.join(
                             newdirs[1], os.path.basename(file)))
-                    elif random.random() <= ratio_train + ratio_validate + ratio_test:
+                    elif rnd <= ratio_train + ratio_validate + ratio_test:
                         shutil.copyfile(file, os.path.join(
                             newdirs[2], os.path.basename(file)))
                     else:
