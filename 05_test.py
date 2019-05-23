@@ -84,11 +84,6 @@ def test_files(classes):
     model = model_load(len(classes))
 
     # テスト用画像取得
-    testdatas = glob(os.path.join(
-        scrpath, root_dirname, root_test_dirname, '*.png'))
-    for testdata in testdatas:
-        test(model, classes, testdata, '')
-
     subdirs = glob(os.path.join(
         scrpath, root_dirname, root_test_dirname, '**'))
     for subdir in subdirs:
