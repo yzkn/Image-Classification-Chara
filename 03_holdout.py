@@ -23,9 +23,9 @@ output_validate_dirname = 'validate'  # 検証データ
 output_test_dirname = 'test'          # テストデータ
 
 # 訓練データ、検証データ、テストデータに振り分ける割合(和が1でなくてもよい)
-ratio_train = 0.06
-ratio_validate = 0.02
-ratio_test = 0.02
+ratio_train = 0.6
+ratio_validate = 0.2
+ratio_test = 0.2
 
 
 def main():

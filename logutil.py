@@ -70,6 +70,9 @@ def log_exception(file=__file__, e=None):
                 print(traceback.format_tb(e.__traceback__), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), file=f)
     except:
         t, v, tb = sys.exc_info()
+        nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+        log_filepath = os.path.splitext(
+            os.path.basename(file))[0] + '_error_' + nowstr + '.txt'
         with open(log_filepath, 'a') as f:
             print(traceback.format_exception(t, v, tb), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), file=sys.stderr)
             print(traceback.format_tb(e.__traceback__), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), file=sys.stderr)

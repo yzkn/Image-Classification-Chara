@@ -2,6 +2,7 @@
 
 # Required:
 #   $ pip install keras keras_preprocessing tensorflow matplotlib
+#   $ pip --no-cache-dir install -I pillow
 
 from glob import glob
 from keras.preprocessing.image import ImageDataGenerator
@@ -87,6 +88,6 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        logutil.log_exception(e)
+        logutil.log_exception(__file__, e)
     finally:
         logutil.log_end()
