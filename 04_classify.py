@@ -31,7 +31,7 @@ image_size = 100
 
 # パラメータ
 batch_size = 16
-nb_epoch = 10
+nb_epoch = 8 # 10
 
 
 def vgg_model_maker(nb_classes):
@@ -159,13 +159,17 @@ def main():
                 sum_validate += num_validate
                 classes.append(os.path.basename(subdir))
 
-    min_steps = 1
-    max_steps = sum_traindata//batch_size
-    lst = [10**i for i in range(0,int(np.log10(max_steps))+1)]
-    for l in lst:
-        train(classes, sum_traindata, sum_validate, l)
+    # step数100
+    train(classes, sum_traindata, sum_validate, 100)
 
-    train(classes, sum_traindata, sum_validate, None)
+    # # step数を徐々に増加させる
+    # max_steps = sum_traindata//batch_size
+    # lst = [10**i for i in range(0,int(np.log10(max_steps))+1)]
+    # for l in lst:
+    #     train(classes, sum_traindata, sum_validate, l)
+
+    # # step数自動設定
+    # train(classes, sum_traindata, sum_validate, None)
 
 
 if __name__ == '__main__':
