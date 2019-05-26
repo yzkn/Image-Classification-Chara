@@ -81,8 +81,22 @@ def image_generator(classes):
     return (train_generator, validation_generator)
 
 
-def train(classes, nb_train_samples, nb_validation_samples):
+def train(classes, nb_train_samples, nb_validation_samples, steps=None):
     start = time.time()
+
+    # steps_per_epoch_value = int(steps) if steps!=None else max(1, nb_train_samples//batch_size)
+    # validation_steps_value = int(steps) if steps!=None else max(1, nb_validation_samples//batch_size)
+    steps = 100
+    steps_per_epoch_value = int(nb_train_samples//batch_size) if steps==None else min(steps, nb_train_samples//batch_size)
+    validation_steps_value = int(nb_validation_samples//batch_size) if steps==None else min(steps, nb_validation_samples//batch_size)
+
+    print(
+        'train( {}, {}, {} )'.format(classes, nb_train_samples, nb_validation_samples) +
+        ' steps_per_epoch_value: {}; validation_steps_value: {}'.format(
+            steps_per_epoch_value, validation_steps_value),
+        datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S')
+    )
+
     vgg_model = vgg_model_maker(len(classes))
 
     # 最後の一層を除いて学習し直さない
@@ -104,15 +118,17 @@ def train(classes, nb_train_samples, nb_validation_samples):
         workers=1,
         use_multiprocessing=False,
         epochs=nb_epoch,
-        steps_per_epoch=nb_train_samples//batch_size,
-        validation_steps=nb_validation_samples//batch_size
-        )
+        steps_per_epoch=steps_per_epoch_value,
+        validation_steps=validation_steps_value
+    )
 
+    steps_label = ("_" + steps) if steps!=None else ""
     vgg_model.save_weights(os.path.join(
-        scrpath, root_dirname, root_weight_dirname, 'finetuning.h5'))
+        scrpath, root_dirname, root_weight_dirname + steps_label, 'finetuning.h5'))
 
     process_time = (time.time() - start)
-    print('Completed. {} sec'.format(process_time), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+    print('Completed. {} sec'.format(process_time),
+          datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
 
 
 def main():
@@ -132,7 +148,8 @@ def main():
     sum_validate = 0
     for subdir in subdirs:
         if os.path.isdir(subdir):
-            print('sub directory: {}'.format(subdir), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
+            print('sub directory: {}'.format(subdir),
+                  datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
             if os.path.isdir(os.path.join(scrpath, root_dirname, root_validate_dirname, os.path.basename(subdir))):
                 # print('  {:.2%} {} {}'.format((count_originalfile/len(files)), subdir, file), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'))
                 num_traindata = len(glob(os.path.join(subdir, '**')))
@@ -141,7 +158,14 @@ def main():
                 sum_traindata += num_traindata
                 sum_validate += num_validate
                 classes.append(os.path.basename(subdir))
-    train(classes, sum_traindata, sum_validate)
+
+    min_steps = 1
+    max_steps = sum_traindata//batch_size
+    lst = [10**i for i in range(0,int(np.log10(max_steps))+1)]
+    for l in lst:
+        train(classes, sum_traindata, sum_validate, l)
+
+    train(classes, sum_traindata, sum_validate, None)
 
 
 if __name__ == '__main__':

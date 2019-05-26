@@ -30,6 +30,8 @@ def log_start(file=__file__):
             # 標準出力を切替
             sys.stdout = open(log_filepath, 'a')
     except:
+        # 出力先を元に戻す
+        sys.stdout.close()
         log_exception()
 
 

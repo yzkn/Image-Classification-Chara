@@ -121,7 +121,8 @@ data*_sample/
 *.png
 
 # weight
-weight/*
+dataset/weight*/*
+finetuning.h5
 
 # result
 result*/*
