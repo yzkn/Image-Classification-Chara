@@ -122,6 +122,6 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        logutil.log_exception(e)
+        logutil.log_exception(__file__, e)
     finally:
         logutil.log_end()

@@ -29,10 +29,10 @@ def log_start(file=__file__):
 
             # 標準出力を切替
             sys.stdout = open(log_filepath, 'a')
-    except:
+    except Exception as e:
         # 出力先を元に戻す
         sys.stdout.close()
-        log_exception()
+        log_exception(__file__, e)
 
 
 def log_end():
@@ -40,8 +40,8 @@ def log_end():
         # 出力先を元に戻す
         sys.stdout.close()
         sys.stdout = sys.__stdout__
-    except:
-        log_exception()
+    except Exception as e:
+        log_exception(__file__, e)
 
 
 def log_exception(file=__file__, e=None):
@@ -70,11 +70,11 @@ def log_exception(file=__file__, e=None):
             with open(log_filepath, 'a') as f:
                 print(traceback.format_exception(t, v, tb), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), file=f)
                 print(traceback.format_tb(e.__traceback__), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), file=f)
-    except:
+    except Exception as e:
         t, v, tb = sys.exc_info()
         nowstr = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
         log_filepath = os.path.splitext(
-            os.path.basename(file))[0] + '_error_' + nowstr + '.txt'
+            os.path.basename(file))[0] + '_error_' + str(nowstr) + '.txt'
         with open(log_filepath, 'a') as f:
             print(traceback.format_exception(t, v, tb), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), file=sys.stderr)
             print(traceback.format_tb(e.__traceback__), datetime.datetime.now().strftime('%Y/%m/%d %H:%M:%S'), file=sys.stderr)

@@ -31,7 +31,7 @@ image_size = 100
 
 # パラメータ
 batch_size = 16
-nb_epoch = 8 # 10
+nb_epoch = 10
 
 
 def vgg_model_maker(nb_classes):
@@ -86,7 +86,6 @@ def train(classes, nb_train_samples, nb_validation_samples, steps=None):
 
     # steps_per_epoch_value = int(steps) if steps!=None else max(1, nb_train_samples//batch_size)
     # validation_steps_value = int(steps) if steps!=None else max(1, nb_validation_samples//batch_size)
-    steps = 100
     steps_per_epoch_value = int(nb_train_samples//batch_size) if steps==None else min(steps, nb_train_samples//batch_size)
     validation_steps_value = int(nb_validation_samples//batch_size) if steps==None else min(steps, nb_validation_samples//batch_size)
 
@@ -122,9 +121,12 @@ def train(classes, nb_train_samples, nb_validation_samples, steps=None):
         validation_steps=validation_steps_value
     )
 
-    steps_label = ("_" + steps) if steps!=None else ""
+    steps_label = ("_" + str(steps)) if steps!=None else ""
+
+    if not os.path.exists(os.path.join(scrpath, root_dirname, root_weight_dirname, steps_label)):
+        os.makedirs(os.path.join(scrpath, root_dirname, root_weight_dirname, steps_label), exist_ok=True)
     vgg_model.save_weights(os.path.join(
-        scrpath, root_dirname, root_weight_dirname + steps_label, 'finetuning.h5'))
+        scrpath, root_dirname, root_weight_dirname, steps_label, 'finetuning.h5'))
 
     process_time = (time.time() - start)
     print('Completed. {} sec'.format(process_time),
@@ -159,14 +161,15 @@ def main():
                 sum_validate += num_validate
                 classes.append(os.path.basename(subdir))
 
-    # step数100
-    train(classes, sum_traindata, sum_validate, 100)
+    # # step数100
+    # train(classes, sum_traindata, sum_validate, 100)
 
-    # # step数を徐々に増加させる
+    # step数を徐々に増加させる
     # max_steps = sum_traindata//batch_size
     # lst = [10**i for i in range(0,int(np.log10(max_steps))+1)]
-    # for l in lst:
-    #     train(classes, sum_traindata, sum_validate, l)
+    lst = [1, 10, 100, 200, 300, 400]
+    for l in lst:
+        train(classes, sum_traindata, sum_validate, l)
 
     # # step数自動設定
     # train(classes, sum_traindata, sum_validate, None)
@@ -177,6 +180,6 @@ if __name__ == '__main__':
     try:
         main()
     except Exception as e:
-        logutil.log_exception(e)
+        logutil.log_exception(__file__, e)
     finally:
         logutil.log_end()
