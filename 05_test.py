@@ -27,7 +27,7 @@ root_train_dirname = 'train'
 root_validate_dirname = 'validate'
 
 # 学習時に重みを保存したディレクトリ
-root_weight_dirname = 'weight'
+root_weight_dirname = 'weight/_300'
 
 # テストデータを格納したディレクトリ
 root_test_dirname = 'test'

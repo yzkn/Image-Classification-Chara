@@ -127,6 +127,7 @@ finetuning.h5
 # result
 result*/*
 log/
+dataset/classified*/*
 
 
 
