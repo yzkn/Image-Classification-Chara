@@ -125,7 +125,7 @@ def train(classes, nb_train_samples, nb_validation_samples, steps=None):
 
     if not os.path.exists(os.path.join(scrpath, root_dirname, root_weight_dirname, steps_label)):
         os.makedirs(os.path.join(scrpath, root_dirname, root_weight_dirname, steps_label), exist_ok=True)
-    vgg_model.save_weights(os.path.join(
+    vgg_model.save(os.path.join(
         scrpath, root_dirname, root_weight_dirname, steps_label, 'finetuning.h5'))
 
     process_time = (time.time() - start)
@@ -167,7 +167,7 @@ def main():
     # step数を徐々に増加させる
     # max_steps = sum_traindata//batch_size
     # lst = [10**i for i in range(0,int(np.log10(max_steps))+1)]
-    lst = [1, 10, 100, 200, 300, 400]
+    lst = [100, 200, 300]
     for l in lst:
         train(classes, sum_traindata, sum_validate, l)
 
