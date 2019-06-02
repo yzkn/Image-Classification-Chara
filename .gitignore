@@ -122,6 +122,7 @@ data*_sample/
 
 # weight
 dataset/weight*/*
+dataset/tfjs*/*
 finetuning.h5
 
 # result
