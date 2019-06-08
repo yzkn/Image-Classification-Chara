@@ -167,7 +167,7 @@ def main():
     # step数を徐々に増加させる
     # max_steps = sum_traindata//batch_size
     # lst = [10**i for i in range(0,int(np.log10(max_steps))+1)]
-    lst = [100, 200, 300]
+    lst = [1, 10, 20, 50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
     for l in lst:
         train(classes, sum_traindata, sum_validate, l)
 
